@@ -83,10 +83,15 @@ class VerticalLineStepView (ctx : Context) : View(ctx) {
             val h_gap : Float = h / (2 * n)
             canvas.save()
             canvas.translate(w/2, h/2)
-            for (i in 0..n) {
+            for (j in  0..1) {
                 canvas.save()
-                canvas.translate(-state.scale * (w_gap) * i, -h_gap * i)
-                canvas.drawLine(0f, 0f, 0f , -h_gap, paint)
+                canvas.scale(1f - 2 * j, 1f)
+                for (i in 0..n) {
+                    canvas.save()
+                    canvas.translate(-state.scale * (w_gap) * i, -h_gap * i)
+                    canvas.drawLine(0f, 0f, 0f, -h_gap, paint)
+                    canvas.restore()
+                }
                 canvas.restore()
             }
             canvas.restore()
@@ -118,7 +123,7 @@ class VerticalLineStepView (ctx : Context) : View(ctx) {
         }
         fun handleTap() {
             step.startUpdating {
-                animator.stop()
+                animator.start()
             }
         }
     }
