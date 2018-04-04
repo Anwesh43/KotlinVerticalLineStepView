@@ -12,13 +12,15 @@ class VerticalLineStepView (ctx : Context) : View(ctx) {
 
     val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    override fun onDraw(canvas : Canvas) {
+    val renderer : Renderer = Renderer(this)
 
+    override fun onDraw(canvas : Canvas) {
+        renderer.render(canvas, paint)
     }
     override fun onTouchEvent(event : MotionEvent) : Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                renderer.handleTap()
             }
         }
         return true
@@ -67,6 +69,55 @@ class VerticalLineStepView (ctx : Context) : View(ctx) {
         fun stop () {
             if (animated) {
                 animated = false
+            }
+        }
+    }
+
+    data class VerticalLineStep (var i : Int, val state : State = State()) {
+        fun draw (canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val n : Int = 4
+            val w_gap : Float = w / (2 * n)
+            val h_gap : Float = h / (2 * n)
+            canvas.save()
+            canvas.translate(w/2, h/2)
+            for (i in 0..n) {
+                canvas.save()
+                canvas.translate(-state.scale * (w_gap) * i, -h_gap * i)
+                canvas.drawLine(0f, 0f, 0f , -h_gap, paint)
+                canvas.restore()
+            }
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+    }
+
+    data class Renderer(var view : VerticalLineStepView) {
+        val step : VerticalLineStep = VerticalLineStep(0)
+        val animator : Animator = Animator(view)
+        fun render (canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            paint.color = Color.parseColor("#ef5350")
+            paint.strokeWidth = 5f
+            paint.strokeCap = Paint.Cap.ROUND
+            step.draw(canvas, paint)
+            animator.animate {
+                step.update {
+                    animator.stop()
+                }
+            }
+        }
+        fun handleTap() {
+            step.startUpdating {
+                animator.stop()
             }
         }
     }
