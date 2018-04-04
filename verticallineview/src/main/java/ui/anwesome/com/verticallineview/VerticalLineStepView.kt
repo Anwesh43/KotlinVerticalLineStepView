@@ -90,6 +90,7 @@ class VerticalLineStepView (ctx : Context) : View(ctx) {
                     canvas.save()
                     canvas.translate(-state.scale * (w_gap) * i, -h_gap * i)
                     canvas.drawLine(0f, 0f, 0f, -h_gap, paint)
+                    canvas.drawLine(0f, -h_gap, -state.scale * (w_gap), -h_gap, paint)
                     canvas.restore()
                 }
                 canvas.restore()
