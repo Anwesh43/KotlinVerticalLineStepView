@@ -3,6 +3,7 @@ package ui.anwesome.com.verticallineview
 /**
  * Created by anweshmishra on 05/04/18.
  */
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.view.View
@@ -119,6 +120,12 @@ class VerticalLineStepView (ctx : Context) : View(ctx) {
             step.startUpdating {
                 animator.stop()
             }
+        }
+    }
+    companion object {
+        fun create(activity : Activity) {
+            val view = VerticalLineStepView(activity)
+            activity.setContentView(view)
         }
     }
 }
